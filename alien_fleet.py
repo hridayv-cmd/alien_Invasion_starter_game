@@ -127,3 +127,6 @@ class AlienFleet:
                 return True
         return False
     
+
+    def check_destroy_status(self):
+       return not self.fleet
