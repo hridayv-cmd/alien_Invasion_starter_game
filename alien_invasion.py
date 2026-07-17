@@ -10,7 +10,9 @@ from time import sleep
 
 
 class AlienInvasion: 
+    """Overall class to manage game assets, behavior, and the main state loop."""
     def __init__(self) -> None:
+        """Initialize the game, create core settings, structures, and window surfaces."""
         pygame.init()
         self.settings = Settings()
         self.game_stats = GameStats(self.settings.starting_ship_count)
@@ -31,14 +33,16 @@ class AlienInvasion:
         self.running = True
         self.clock = pygame.time.Clock()
 
+        #Initialize audio mixer and configure standard laser sound effects
         pygame.mixer.init()
         self.laser_sound = pygame.mixer.Sound(self.settings.laser_sound)
         self.laser_sound.set_volume(0.7)
 
+        # Configure secondary audio playback for impact hits
         self.impact_sound = pygame.mixer.Sound(self.settings.impact_sound)
         self.impact_sound.set_volume(0.7)
 
-        # Initialize the ship and equip it with the weapon arsenal and add Alien
+        # Initialize the ship and equip it with the weapon arsenal and add Alien Fleet
         self.ship = Ship(self, Arsenal(self))
         self.alien_fleet = AlienFleet(self)
         self.alien_fleet.create_fleet()
@@ -58,6 +62,7 @@ class AlienInvasion:
             self.clock.tick(self.settings.FPS)
 
     def _check_collisions(self):
+        """Monitor and resolve all game element overlap intersections."""
         #check collisions for ship
         if self.ship.check_collisions(self.alien_fleet.fleet):
             self._check_game_status()
@@ -73,7 +78,7 @@ class AlienInvasion:
             self.impact_sound.play()
             self.impact_sound.fadeout(500)
 
-
+        # Reset and advance the layer if the current wave is fully eliminated
         if self.alien_fleet.check_destroy_status():
             self._reset_level()
             
@@ -81,11 +86,11 @@ class AlienInvasion:
 
       
     def _check_game_status(self):
-
+        """Handle player life deduction and determine game-over status flags."""
         if self.game_stats.ship_left > 0:
             self.game_stats.ship_left -= 1
             self._reset_level()
-            sleep(0.5)
+            sleep(0.5) # Pause briefly so player notices the hit reset
         else:
             self.game_active = False
 
@@ -93,6 +98,7 @@ class AlienInvasion:
         
 
     def _reset_level(self):
+        """Clear out old active sprite elements and construct a fresh grid wave."""
         self.ship.arsenal.arsenal.empty()
         self.alien_fleet.fleet.empty()
         self.alien_fleet.create_fleet()
@@ -108,6 +114,7 @@ class AlienInvasion:
         pygame.display.flip()             # Show the newly drawn frame
 
     def _check_events(self):
+        """Listen for keyboard input signals and window execution closures."""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -119,12 +126,14 @@ class AlienInvasion:
                 self._check_keyup_event(event)
 
     def _check_keyup_event(self, event) -> None:
+        """Handle key releases to halt responsive player actions."""
         if event.key == pygame.K_RIGHT:
             self.ship.moving_right = False
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = False
 
     def _check_keydown_event(self, event) -> None:
+        """Handle key pressures to trigger responsive player actions."""
         if event.key == pygame.K_RIGHT:
             self.ship.moving_right = True
         elif event.key == pygame.K_LEFT:

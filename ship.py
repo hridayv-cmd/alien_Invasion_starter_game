@@ -22,16 +22,19 @@ class Ship:
             (self.settings.ship_w, self.settings.ship_h) 
             )
         
-
+        # Initialize placement properties
         self.rect = self.image.get_rect()
         self._center_ship()
+
+        # Movement flags to track ongoing key presses
         self.moving_right = False
         self.moving_left  = False
         self.arsenal = arsenal
 
     def _center_ship(self):
+        """Reset the ship back to its starting bottom-center coordinate position."""
         self.rect.midbottom = self.boundaries.midbottom
-        self.x = float(self.rect.x)
+        self.x = float(self.rect.x)     # Track precise decimal position for horizontal tracking
 
     def update(self):
         """Update the ship's position and manage weapon cooling/updates."""
@@ -50,7 +53,7 @@ class Ship:
         if self.moving_left and self.rect.left > self.boundaries.left:
             self.x -= temp_speed
 
-
+        # Sync the structural layout rect position with the floating mathematical variable
         self.rect.x = self.x
 
 
@@ -64,8 +67,9 @@ class Ship:
         return self.arsenal.fire_bullet()
     
     def check_collisions(self, other_group):
+        """Detect individual contact hits with elements like the alien fleet group."""
         if pygame.sprite.spritecollideany(self, other_group):
-            self._center_ship()
+            self._center_ship()     # Snap back to center upon taking damage
             return True
         return False
     
