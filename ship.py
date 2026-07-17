@@ -22,17 +22,16 @@ class Ship:
             (self.settings.ship_w, self.settings.ship_h) 
             )
         
-        # Position the ship at the bottom-center of the screen
+
         self.rect = self.image.get_rect()
-        self.rect.midbottom = self.boundaries.midbottom
-        
-        # Movement flags to track key presses
+        self._center_ship()
         self.moving_right = False
         self.moving_left  = False
-        
-        # Store a decimal value for precise horizontal tracking
-        self.x = float(self.rect.x)
         self.arsenal = arsenal
+
+    def _center_ship(self):
+        self.rect.midbottom = self.boundaries.midbottom
+        self.x = float(self.rect.x)
 
     def update(self):
         """Update the ship's position and manage weapon cooling/updates."""
@@ -63,3 +62,10 @@ class Ship:
     def fire(self):
         """Request the weapon arsenal to fire a bullet."""
         return self.arsenal.fire_bullet()
+    
+    def check_collisions(self, other_group):
+        if pygame.sprite.spritecollideany(self, other_group):
+            self._center_ship()
+            return True
+        return False
+    

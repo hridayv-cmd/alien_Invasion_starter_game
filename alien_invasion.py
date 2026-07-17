@@ -31,6 +31,9 @@ class AlienInvasion:
         self.laser_sound = pygame.mixer.Sound(self.settings.laser_sound)
         self.laser_sound.set_volume(0.7)
 
+        self.impact_sound = pygame.mixer.Sound(self.settings.impact_sound)
+        self.impact_sound.set_volume(0.7)
+
         # Initialize the ship and equip it with the weapon arsenal and add Alien
         self.ship = Ship(self, Arsenal(self))
         self.alien_fleet = AlienFleet(self)
@@ -43,9 +46,27 @@ class AlienInvasion:
         while self.running:
             self._check_events()        # Look for player inputs (keys)
             self.ship.update()          # Calculate ship movement
-            self.alien_fleet.update_fleet()      # Update the position and movement of the alien(s)
+            self.alien_fleet.update_fleet()         # Update the position and movement of the alien(s)
+            self._check_collisions()      
             self._update_screen()       # Render everything onto the screen
             self.clock.tick(self.settings.FPS)
+
+    def _check_collisions(self):
+        #check collisions for ship
+        if self.ship.check_collisions(self.alien_fleet.fleet):
+            self._reset_level()
+           #subtract one life is possible
+
+      
+
+        
+
+    def _reset_level(self):
+        self.ship.arsenal.arsenal.empty()
+        self.alien_fleet.fleet.empty()
+        self.alien_fleet.create_fleet()
+
+
 
     def _update_screen(self):
         """Redraw all game objects and refresh the display screen."""
