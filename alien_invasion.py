@@ -43,7 +43,7 @@ class AlienInvasion:
         while self.running:
             self._check_events()        # Look for player inputs (keys)
             self.ship.update()          # Calculate ship movement
-            # self.alien.update()         # Update the position and movement of the alien(s)
+            self.alien_fleet.update_fleet()      # Update the position and movement of the alien(s)
             self._update_screen()       # Render everything onto the screen
             self.clock.tick(self.settings.FPS)
 

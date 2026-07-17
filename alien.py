@@ -10,7 +10,7 @@ class Alien(Sprite):
     """A class to represent a single alien in the fleet."""
     def __init__(self, fleet: 'AlienFleet', x: float, y:float ):
         super().__init__()
-        
+        self.fleet = fleet
         self.screen = fleet.game.screen
         self.boundaries = fleet.game.screen.get_rect()
         self.settings = fleet.game.settings
@@ -35,13 +35,9 @@ class Alien(Sprite):
         """Move the alien right or left, dropping it down if it hits a wall."""
         temp_speed = self.settings.fleet_speed
 
-        # If the alien hits an edge, shift direction and drop down
-        if self.check_edges():
-            self.settings.fleet_direction *= -1
-            self.y += self.settings.fleet_drop_speed
 
         # Calculate new horizontal position based on direction and speed
-        self.x += temp_speed * self.settings.fleet_direction
+        self.x += temp_speed * self.fleet.fleet_direction
 
         # Update actual rect coordinates
         self.rect.x = self.x

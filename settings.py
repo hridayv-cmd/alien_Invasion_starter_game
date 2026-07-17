@@ -29,6 +29,6 @@ class Settings:
         self.alien_file = Path.cwd() / 'Assets' / 'Images' / 'enemy_4.png'
         self.alien_w = 40
         self.alien_h = 40
-        self.fleet_speed = 5
+        self.fleet_speed = 2
         self.fleet_direction = 1        # 1 represents moving right; -1 represents moving left          
         self.fleet_drop_speed = 40      # How far down the screen the alien drops when hitting a wall
