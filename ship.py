@@ -1,40 +1,53 @@
 import pygame
 from typing import TYPE_CHECKING
 
+# Avoid circular imports while allowing type hinting
 if TYPE_CHECKING:
     from alien_invasion import AlienInvasion
     from arsenal import Arsenal
 
 class Ship:
-    
+    """Manages player ship behavior, movement, rendering, and firing."""
+
     def __init__(self, game: 'AlienInvasion', arsenal: 'Arsenal'):
+        """Initialize the ship and set its starting position at bottom-center."""
         self.game = game
         self.settings = game.settings
         self.screen = game.screen
         self.boundaries = self.screen.get_rect()
 
+        # Load and scale the player ship image
         self.image = pygame.image.load(self.settings.ship_file)
         self.image = pygame.transform.scale(self.image,
             (self.settings.ship_w, self.settings.ship_h) 
             )
         
-
+        # Position the ship at the bottom-center of the screen
         self.rect = self.image.get_rect()
         self.rect.midbottom = self.boundaries.midbottom
+        
+        # Movement flags to track key presses
         self.moving_right = False
         self.moving_left  = False
+        
+        # Store a decimal value for precise horizontal tracking
         self.x = float(self.rect.x)
         self.arsenal = arsenal
 
     def update(self):
-        # Updating the position of the ship
+        """Update the ship's position and manage weapon cooling/updates."""
         self._update_ship_movement()
         self.arsenal.update_arsenal()
 
     def _update_ship_movement(self):
+        """Adjust the ship's horizontal position while keeping it in screen boundaries."""
         temp_speed = self.settings.ship_speed
+        
+        # Move right if flag is active and ship hasn't hit the right boundary
         if self.moving_right and self.rect.right < self.boundaries.right:
             self.x += temp_speed
+
+            # Move left if flag is active and ship hasn't hit the left boundary
         if self.moving_left and self.rect.left > self.boundaries.left:
             self.x -= temp_speed
 
@@ -43,8 +56,10 @@ class Ship:
 
 
     def draw(self) -> None:
+        """Draw the ship on screen at its current position."""
         self.screen.blit(self.image, self.rect )
 
 
     def fire(self):
+        """Request the weapon arsenal to fire a bullet."""
         return self.arsenal.fire_bullet()

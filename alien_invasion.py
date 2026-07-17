@@ -3,23 +3,27 @@ import pygame
 from settings import Settings
 from ship import Ship
 from arsenal import Arsenal
-from alien import Alien
+#from alien import Alien
+from alien_fleet import AlienFleet
 
 class AlienInvasion: 
     def __init__(self) -> None:
         pygame.init()
         self.settings = Settings()
 
+        # Set up the display window using settings dimensions
         self.screen = pygame.display.set_mode(
             (self.settings.screen_w, self.settings.screen_h)
             )
         pygame.display.set_caption(self.settings.name)
 
+        # Load and scale the background image to fit the screen
         self.bg = pygame.image.load(self.settings.bg_file)
         self.bg = pygame.transform.scale(self.bg,
             (self.settings.screen_w, self.settings.screen_h)
             )
-
+        
+        # Flag to manage the game state loop and set frame rate clock
         self.running = True
         self.clock = pygame.time.Clock()
 
@@ -27,26 +31,29 @@ class AlienInvasion:
         self.laser_sound = pygame.mixer.Sound(self.settings.laser_sound)
         self.laser_sound.set_volume(0.7)
 
-
+        # Initialize the ship and equip it with the weapon arsenal and add Alien
         self.ship = Ship(self, Arsenal(self))
-        self.alien = Alien(self, 10,10)
+        self.alien_fleet = AlienFleet(self)
+        self.alien_fleet.create_fleet()
 
 
     def run_game(self):
+        """Start the main game loop to continuously update and redraw."""
         #Game loop
         while self.running:
-            self._check_events()
-            self.ship.update()
-            self.alien.update()
-            self._update_screen()
+            self._check_events()        # Look for player inputs (keys)
+            self.ship.update()          # Calculate ship movement
+            # self.alien.update()         # Update the position and movement of the alien(s)
+            self._update_screen()       # Render everything onto the screen
             self.clock.tick(self.settings.FPS)
 
     def _update_screen(self):
-        self.screen.blit(self.bg,(0,0))   
-        self.ship.draw()
-        self.alien.draw_alien()
-        self.ship.arsenal.draw() 
-        pygame.display.flip()
+        """Redraw all game objects and refresh the display screen."""
+        self.screen.blit(self.bg,(0,0))   # Draw background
+        self.ship.draw()                  # Draw Ship
+        self.alien_fleet.draw()           # Draw Alien
+        self.ship.arsenal.draw()          # Show any active lasers
+        pygame.display.flip()             # Show the newly drawn frame
 
     def _check_events(self):
         for event in pygame.event.get():
