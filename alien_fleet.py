@@ -12,6 +12,7 @@ class AlienFleet:
     
     def __init__(self, game: 'AlienInvasion'):
         """Initialize the fleet, link settings, and create the grid of aliens."""
+        self.game = game
         self.settings = game.settings
         self.screen = game.screen
 
@@ -27,16 +28,16 @@ class AlienFleet:
 
     def create_fleet(self):
         """Calculate alignment metrics and populate the screen with a grid of aliens."""
+        # Define the structural variables from settings so they can be passed below
+        alien_w = self.settings.alien_w
         alien_h = self.settings.alien_h
         screen_w = self.settings.screen_w
         screen_h = self.settings.screen_h
-
 
         # Determine how many aliens fit on the screen grid and get placement offsets
         fleet_w, fleet_h = self.calculate_fleet_size(alien_w, screen_w, alien_h, screen_h)
         x_offset, y_offset = self.calculate_offsets(alien_w, alien_h, screen_w, fleet_w, fleet_h)
         
-   
         # Build the final grouped fleet structure
         self._create_rectangle_fleet(alien_w, alien_h, fleet_w, fleet_h, x_offset, y_offset)
 
@@ -91,8 +92,8 @@ class AlienFleet:
     
 
     def _create_alien(self, current_x: int, current_y: int):
-        """Instantiate an alien unit and insert it directly into the fleet tracking group."""
-        #Passed self.game instead of self so Alien has screen access
+        """Create an individual alien and add it to the fleet group."""
+        # Pass self (the fleet) back to the alien, exactly like the original code
         new_alien = Alien(self, current_x, current_y)
         self.fleet.add(new_alien)
 
