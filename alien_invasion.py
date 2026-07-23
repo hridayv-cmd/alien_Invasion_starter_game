@@ -86,6 +86,9 @@ class AlienInvasion:
         # Reset and advance the layer if the current wave is fully eliminated
         if self.alien_fleet.check_destroy_status():
             self._reset_level()
+            self.settings.increase_difficulty()
+            # Update game stats level
+            # Update Hud View
             
         
 
@@ -109,7 +112,7 @@ class AlienInvasion:
         self.alien_fleet.create_fleet()
 
     def restart_game(self):
-        # setting up dynamic settings
+        self.settings.initialize_dynamic_settings()
         # reset Game stats
         # update HUD scores
         self._reset_level()
@@ -123,6 +126,7 @@ class AlienInvasion:
         self.ship.draw()                  # Draw Ship
         self.alien_fleet.draw()           # Draw Alien
         self.ship.arsenal.draw()          # Show any active lasers
+        # Draw HUD
 
 
         if not self.game_active:
