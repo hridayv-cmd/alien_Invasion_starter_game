@@ -16,6 +16,7 @@ class AlienInvasion:
         """Initialize the game, create core settings, structures, and window surfaces."""
         pygame.init()
         self.settings = Settings()
+        self.settings.initialize_dynamic_settings()
         self.game_stats = GameStats(self.settings.starting_ship_count)
 
         # Set up the display window using settings dimensions
