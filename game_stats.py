@@ -24,7 +24,7 @@ class GameStats():
 
     def init_saved_scores(self):
         self.path = self.settings.scores_file
-        if self.path.exists() and self.path.stat.__sizeof__() > 80:
+        if self.path.exists() and self.path.stat.__sizeof__() > 20:
             contents = self.path.read_text()
             if not contents:
                 print('File empty')
